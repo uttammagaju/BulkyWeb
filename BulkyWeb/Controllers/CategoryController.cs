@@ -37,6 +37,7 @@ namespace BulkyWeb.Controllers
             {
                 _db.Categories.Add(emodel);
                 _db.SaveChanges();
+                TempData["success"] = "Category Create Sucessfully";
                 return RedirectToAction("Index");
             }
             
@@ -64,6 +65,7 @@ namespace BulkyWeb.Controllers
             {
                 _db.Categories.Update(emodel);
                 _db.SaveChanges();
+                TempData["success"] = "Category Update Sucessfully";
             }
             if (emodel == null)
             {
@@ -81,13 +83,15 @@ namespace BulkyWeb.Controllers
             Category? categoryFromDb = _db.Categories.Find(id);
             return View(categoryFromDb);      
         }
-        [HttpPost]
-        public IActionResult Delete(Category emodel)
+        [HttpPost, ActionName("Delete")]
+        public IActionResult DeletePost(Category emodel)
         {
             if (ModelState.IsValid)
             {
                 _db.Remove(emodel);
                 _db.SaveChanges();
+                TempData["success"] = "Category Delete Sucessfully";
+                Console.WriteLine(TempData["sucess"]);
             }
             if(emodel == null)
             {
