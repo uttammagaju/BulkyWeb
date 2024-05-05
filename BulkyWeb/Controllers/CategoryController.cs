@@ -1,18 +1,19 @@
 ﻿using Bulky.DataAccess.Data;
+using Bulky.DataAccess.Repository.IRepository;
 using Bulky.Models;
 using Microsoft.AspNetCore.Mvc;
 namespace BulkyWeb.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        public CategoryController(ApplicationDbContext db)
+        private readonly ICategoryRepository _categoryRepo;
+        public CategoryController(ICategoryRepository db)
         {
-            _db = db;
+            _categoryRepo = db;
         }
         public IActionResult Index()
         {
-           List<Category> objCategoryList = _db.Categories.ToList();
+           List<Category> objCategoryList = _categoryRepo.GetAll().ToList();
             return View(objCategoryList);
         }
         [HttpGet]
@@ -33,8 +34,8 @@ namespace BulkyWeb.Controllers
             }
             if (ModelState.IsValid)
             {
-                _db.Categories.Add(emodel);
-                _db.SaveChanges();
+                _categoryRepo.Add(emodel);
+                _categoryRepo.Save();
                 TempData["success"] = "Category Create Sucessfully";
                 return RedirectToAction("Index");
             }
@@ -49,7 +50,7 @@ namespace BulkyWeb.Controllers
             {
                 return NotFound();
             }
-            Category? categoryFromDb = _db.Categories.Find(id);
+            Category? categoryFromDb = _categoryRepo.Get(u => u.ID == id);
             if (categoryFromDb == null)
             {
                 return NotFound();
@@ -61,8 +62,8 @@ namespace BulkyWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Categories.Update(emodel);
-                _db.SaveChanges();
+                _categoryRepo.Update(emodel);
+                _categoryRepo.Save();
                 TempData["success"] = "Category Update Sucessfully";
             }
             if (emodel == null)
@@ -78,16 +79,17 @@ namespace BulkyWeb.Controllers
             {
                 return NotFound();
             }
-            Category? categoryFromDb = _db.Categories.Find(id);
+            Category? categoryFromDb = _categoryRepo.Get(u => u.ID == id);
             return View(categoryFromDb);      
         }
         [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePost(Category emodel)
+        public IActionResult DeletePost(Category emodel)//(int? id)
         {
+            //Category? obj = _categoryRepo.Get(u => u.ID == id)
             if (ModelState.IsValid)
             {
-                _db.Remove(emodel);
-                _db.SaveChanges();
+                _categoryRepo.Remove(emodel);
+                _categoryRepo.Save();
                 TempData["success"] = "Category Delete Sucessfully";
                 Console.WriteLine(TempData["sucess"]);
             }
