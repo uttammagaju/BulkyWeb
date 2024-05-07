@@ -37,7 +37,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
             {
                 _unitOfWork.Category.Add(emodel);
                 _unitOfWork.Save();
-                TempData["success"] = "Category Create Sucessfully";
+                TempData["success"] = "Category Create Successfully";
                 return RedirectToAction("Index");
             }
 

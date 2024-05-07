@@ -1,0 +1,60 @@
+﻿@model List<Product>
+<partial name="_Notification"/>
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-primary m-lg-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white">Product List</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body p-4">
+        <div class="col-12 text-center d-flex justify-content-end">
+            <a asp-controller="Product" asp-action="Create" class="btn btn-outline-primary justify-content-end">Add New Product</a> 
+        </div>
+        <div class="row pb-3">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>S.N</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>ISBN</th>
+                        <th>Author</th>
+                        <th>ListPrice</th>
+                        <th>Price</th>
+                        <th>Price50</th>
+                        <th>Price100</th>
+                        <th>Action</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var obj in Model.OrderBy(u => u.Id))
+                    {
+                       <tr>
+                           <td>@obj.Id</td>
+                           <td>@obj.Title</td>
+                           <td>@obj.Description</td>
+                           <td>@obj.ISBN</td>
+                           <td>@obj.Author</td>
+                           <td>@obj.ListPrice</td>
+                           <td>@obj.Price</td>
+                           <td>@obj.Price50</td>
+                           <td>@obj.Price100</td>
+                           <th>
+                               <a asp-action="Edit" asp-controller="Product" asp-route-id="@obj.Id" class="btn btn-outline-info">Edit</a>
+                                @*<a asp-action="Delete" asp-controller="Product" asp-route-id="@obj.Id" class="btn btn-outline-danger">Delete</a>*@
+                           </th>
+
+                       </tr>
+                        
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

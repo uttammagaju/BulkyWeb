@@ -7,8 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services. AddDbContext<ApplicationDbContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<ApplicationDbContext>(options => 
+   options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
@@ -33,4 +33,4 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
-//app.Run();
+app.Run();
