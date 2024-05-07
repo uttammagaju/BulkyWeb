@@ -92,7 +92,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
                 _unitOfWork.Category.Remove(emodel);
                 _unitOfWork.Save();
                 TempData["success"] = "Category Delete Sucessfully";
-                Console.WriteLine(TempData["sucess"]);
+                
             }
             if (emodel == null)
             {

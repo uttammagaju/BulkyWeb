@@ -9,7 +9,7 @@
         </div>
     </div>
     <div class="card-body py-2">
-        <form action="Edit" method="post" class="row">
+        <form action="Delete" method="post" class="row">
             <input type="hidden" asp-for="Id" />
             <div class=" mb-3 row">
                 <label asp-for="Title" class="ms-2 ">Title</label>
@@ -53,10 +53,10 @@
             </div>
             <div class="row">
                 <div class="col-6 col-md-3">
-                    <button type="submit" class="btn btn-outline-primary form-control">Update</button>
+                    <button type="submit" class="btn btn-outline-primary form-control">Delete</button>
                 </div>
                 <div class=" col-6 col-md-3">
-                    <a asp-controller="Product" asp-action="Index" class="btn btn-outline-primary form-control">Back To List</a>
+                    <a asp-controller="Product" asp-action="Index" class="btn btn-outline-danger form-control">Back To List</a>
                 </div>
             </div>
         </form>
