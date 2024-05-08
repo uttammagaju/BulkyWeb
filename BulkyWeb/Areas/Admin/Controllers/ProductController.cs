@@ -2,6 +2,7 @@
 using Bulky.DataAccess.Repository;
 using Bulky.DataAccess.Repository.IRepository;
 using Bulky.Models;
+using Bulky.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -18,39 +19,64 @@ namespace BulkyWeb.Areas.Admin.Controllers
         public IActionResult Index()
         {
             List<Product> objProductList = _unitOfWork.Product.GetAll().ToList();
-
-            IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category
-                .GetAll().Select(u => new SelectListItem
-            {
-                    //property populate
-                    Text = u.Name,
-                    Value = u.ID.ToString()
-            });
             return View(objProductList);
         }
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            //IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category
+            //   .GetAll().Select(u => new SelectListItem
+            //   {
+            //       //property populate
+            //       Text = u.Name,
+            //       Value = u.ID.ToString()
+            //   });
+
+            //ViewBag.CategoryList = CategoryList;
+            //Alternative 
+            //ViewData["CategoryList"] = CategoryList;
+
+
+            ProductVM productVM = new()
+            {
+                CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+               {
+                   //property populate
+                   Text = u.Name,
+                   Value = u.ID.ToString()
+               }) ,
+                Product = new Product()
+            };
+            return View(productVM);
         }
         [HttpPost]
-        public IActionResult Create(Product emodel)
+        public IActionResult Create(ProductVM emodel)
         {
             if(ModelState.IsValid)
             {
-                if(_unitOfWork.Product.GetAll().Any(p => p.ISBN == emodel.ISBN)){
+                if(_unitOfWork.Product.GetAll().Any(p => p.ISBN == emodel.Product.ISBN)){
                     ModelState.AddModelError("ISBN", "Product with this ISBN already exist");
                 }
                 else {
-                    _unitOfWork.Product.Add(emodel);
+                    _unitOfWork.Product.Add(emodel.Product);
                     _unitOfWork.Save();
                     TempData["success"] = "Product Create Successful";
                     return RedirectToAction("Index");
                 }
                 
             }
-            return View(emodel);
+            else
+            {
+                emodel.CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+                {
+                    //property populate
+                    Text = u.Name,
+                    Value = u.ID.ToString()
+                });
+                return View(emodel);
+            }
         }
+
         [HttpGet]
         public IActionResult Edit(int? id)
         {
