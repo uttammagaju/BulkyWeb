@@ -20,7 +20,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            List<Product> objProductList = _unitOfWork.Product.GetAll().ToList();
+            List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties:"Category").ToList();
             return View(objProductList);
         }
         [HttpGet]
@@ -69,28 +69,46 @@ namespace BulkyWeb.Areas.Admin.Controllers
             {
                 string wwwRootPath = _webHostEnvironment.WebRootPath;
                 
-                if(_unitOfWork.Product.GetAll().Any(p => p.ISBN == emodel.Product.ISBN)){
-                    ModelState.AddModelError("ISBN", "Product with this ISBN already exist");
-                }
-                else {
+                //if(_unitOfWork.Product.GetAll().Any(p => p.ISBN == emodel.Product.ISBN)){
+                //    ModelState.AddModelError("ISBN", "Product with this ISBN already exist");
+                //}
+                //else {
                     if (file != null)
                     {
                         string filename = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                         string productPath = Path.Combine(wwwRootPath, @"images\product\");
+
+                        if (!string.IsNullOrEmpty(emodel.Product.ImageUrl))
+                        {
+                            //delete the old image
+                            var oldImagePath = Path.Combine(wwwRootPath, emodel.Product.ImageUrl.TrimStart('\\'));
+
+                            if (System.IO.File.Exists(oldImagePath))
+                            {
+                                System.IO.File.Delete(oldImagePath);
+                            }
+                        }
                         using (var fileStream = new FileStream(Path.Combine(productPath, filename), FileMode.Create))
                         {
                             file.CopyTo(fileStream);
                         }
                         emodel.Product.ImageUrl = @"\images\product\" + filename;
-                       
                     }
-                    _unitOfWork.Product.Add(emodel.Product);
+
+                    if (emodel.Product.Id == 0)
+                    {
+                        _unitOfWork.Product.Add(emodel.Product);
+                    }
+                    else
+                    {
+                        _unitOfWork.Product.update(emodel.Product);
+                    }
                     _unitOfWork.Save();
                     TempData["success"] = "Product Create Successful";
                     return RedirectToAction("Index");
-                }
+                //}
                 return View();
-            }
+          }
             else
             {
                 emodel.CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
