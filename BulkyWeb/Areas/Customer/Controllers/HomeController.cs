@@ -43,7 +43,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
             shoppingCart.ApplicationUserId= userId;
 
-            ShoppingCart cartFromDb = _unitOfWork.ShoppingCart.Get( u => u.ApplicationUserId == userId && u.ProductId == shoppingCart.ProductId );
+            ShoppingCart cartFromDb = _unitOfWork.ShoppingCart.Get( u => u.ApplicationUserId == userId && u.ProductId == shoppingCart.ProductId );  
             if(cartFromDb != null)
             {
                 //shopping cart exists
@@ -56,7 +56,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
                 _unitOfWork.ShoppingCart.Add(shoppingCart);
 
             }
-
+            TempData["success"] = "Cart update successfully";
              _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
         }
